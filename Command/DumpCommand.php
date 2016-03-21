@@ -13,6 +13,7 @@ namespace FOS\JsRoutingBundle\Command;
 
 use FOS\JsRoutingBundle\Response\RoutesResponse;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,11 +27,18 @@ class DumpCommand extends ContainerAwareCommand
 {
     private $targetPath;
 
+    private $tags;
+
     protected function configure()
     {
         $this
             ->setName('fos:js-routing:dump')
             ->setDescription('Dumps exposed routes to the filesystem')
+            ->addArgument(
+                'tags',
+                InputArgument::IS_ARRAY,
+                'List of tags to dump in the file.'
+            )
             ->addOption(
                 'callback',
                 null,
@@ -60,6 +68,8 @@ class DumpCommand extends ContainerAwareCommand
 
         $this->targetPath = $input->getOption('target') ?:
             sprintf('%s/../web/js/fos_js_routes.js', $this->getContainer()->getParameter('kernel.root_dir'));
+
+        $this->tags = $input->getArgument('tags');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -111,7 +121,7 @@ class DumpCommand extends ContainerAwareCommand
         $content = $this->getSerializer()->serialize(
             new RoutesResponse(
                 $baseUrl,
-                $this->getExposedRoutesExtractor()->getRoutes(),
+                $this->getExposedRoutesExtractor()->getRoutes($this->tags),
                 $input->getOption('locale'),
                 $this->getExposedRoutesExtractor()->getHost(),
                 $this->getExposedRoutesExtractor()->getScheme()

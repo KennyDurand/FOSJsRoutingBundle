@@ -56,11 +56,11 @@ class ExposedRoutesExtractor implements ExposedRoutesExtractorInterface
     /**
      * {@inheritDoc}
      */
-    public function getRoutes()
+    public function getRoutes($tags = [])
     {
         $exposedRoutes = array();
         /** @var $route Route */
-        foreach ($this->getExposedRoutes() as $name => $route) {
+        foreach ($this->getExposedRoutes($tags) as $name => $route) {
             // Maybe there is a better way to do that...
             $compiledRoute = $route->compile();
             $defaults = array_intersect_key(
@@ -83,7 +83,7 @@ class ExposedRoutesExtractor implements ExposedRoutesExtractorInterface
     /**
      * {@inheritDoc}
      */
-    public function getExposedRoutes()
+    public function getExposedRoutes($tags = [])
     {
         $routes     = array();
         $collection = $this->router->getRouteCollection();
@@ -92,6 +92,13 @@ class ExposedRoutesExtractor implements ExposedRoutesExtractorInterface
         foreach ($collection->all() as $name => $route) {
             if (false === $route->getOption('expose')) {
                 continue;
+            }
+
+            if (!is_null($tags)) {
+                $routeTag = $route->getOption('tag');
+                if (!$routeTag || !in_array($routeTag, $tags)) {
+                    continue;
+                }
             }
 
             if (($route->getOption('expose') && (true === $route->getOption('expose') || 'true' === $route->getOption('expose')))

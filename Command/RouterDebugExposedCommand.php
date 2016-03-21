@@ -64,7 +64,7 @@ EOF
                 throw new \InvalidArgumentException(sprintf('The route "%s" does not exist.', $input->getArgument('name')));
             }
 
-            $exposedRoutes = $extractor->getExposedRoutes();
+            $exposedRoutes = $extractor->getExposedRoutes(null);
             if (!isset($exposedRoutes[$input->getArgument('name')])) {
                 throw new \InvalidArgumentException(sprintf('The route "%s" was found, but it is not an exposed route.', $input->getArgument('name')));
             }
@@ -83,10 +83,10 @@ EOF
         } else {
             if (!class_exists('Symfony\Bundle\FrameworkBundle\Console\Helper\DescriptorHelper')) {
                 // BC layer for Symfony 2.3 and lower
-                $this->outputRoutes($output, $extractor->getExposedRoutes());
+                $this->outputRoutes($output, $extractor->getExposedRoutes(null));
             } else {
                 $routeCollection = new RouteCollection();
-                foreach ($extractor->getExposedRoutes() as $name => $route) {
+                foreach ($extractor->getExposedRoutes(null) as $name => $route) {
                     $routeCollection->add($name, $route);
                 }
 

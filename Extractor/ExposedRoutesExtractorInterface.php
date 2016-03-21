@@ -24,9 +24,11 @@ interface ExposedRoutesExtractorInterface
     /**
      * Returns an array of exposed routes where keys are the route names.
      *
+     * @param array|null $tags the whitelist of tags to filter the routes
+     *
      * @return ExtractedRoute[]
      */
-    public function getRoutes();
+    public function getRoutes($tags = []);
 
     /**
      * Returns the Base URL.
@@ -77,7 +79,9 @@ interface ExposedRoutesExtractorInterface
     /**
      * Returns an array of all exposed Route objects.
      *
+     * @param array|null $tags the whitelist of tags to filter the routes
+     *
      * @return Route[]
      */
-    public function getExposedRoutes();
+    public function getExposedRoutes($tags);
 }
