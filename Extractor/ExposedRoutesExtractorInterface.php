@@ -22,9 +22,11 @@ interface ExposedRoutesExtractorInterface
     /**
      * Returns a collection of exposed routes
      *
+     * @param array $tags
+     *
      * @return \Symfony\Component\Routing\RouteCollection
      */
-    public function getRoutes();
+    public function getRoutes($tags = []);
 
     /**
      * Return the Base URL
@@ -81,4 +83,14 @@ interface ExposedRoutesExtractorInterface
      * @return bool
      */
     public function isRouteExposed(Route $route, $name);
+
+    /**
+     * Tell whether a route matches a whitelist of tags
+     *
+     * @param Route $route
+     * @param array $tag
+     *
+     * @return bool
+     */
+    public function routeMatchesTags(Route $route, $tag);
 }

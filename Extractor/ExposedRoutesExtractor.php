@@ -62,14 +62,14 @@ class ExposedRoutesExtractor implements ExposedRoutesExtractorInterface
     /**
      * {@inheritDoc}
      */
-    public function getRoutes()
+    public function getRoutes($tags = [])
     {
         $collection = $this->router->getRouteCollection();
         $routes     = new RouteCollection();
 
         /** @var Route $route */
         foreach ($collection->all() as $name => $route) {
-            if ($this->isRouteExposed($route, $name)) {
+            if ($this->isRouteExposed($route, $name) && $this->routeMatchesTags($route, $tags)) {
                 $routes->add($name, $route);
             }
         }
@@ -159,6 +159,30 @@ class ExposedRoutesExtractor implements ExposedRoutesExtractorInterface
         return true === $route->getOption('expose')
             || 'true' === $route->getOption('expose')
             || ('' !== $pattern && preg_match('#' . $pattern . '#', $name));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function routeMatchesTags(Route $route, $tags)
+    {
+        if (is_null($tags)) {
+            return true;
+        }
+
+        $routeTag = $route->getOption('tag');
+
+        if (!$routeTag) {
+            return false;
+        }
+
+        foreach ($tags as $tag) {
+            if ($routeTag === $tag) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

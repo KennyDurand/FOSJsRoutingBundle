@@ -84,10 +84,10 @@ EOF
         } else {
             if (!class_exists('Symfony\Bundle\FrameworkBundle\Console\Helper\DescriptorHelper')) {
                 // BC layer for Symfony 2.3
-                $this->outputRoutes($output, $extractor->getRoutes());
+                $this->outputRoutes($output, $extractor->getRoutes(null));
             } else {
                 $helper = new DescriptorHelper();
-                $helper->describe($output, $extractor->getRoutes(), array(
+                $helper->describe($output, $extractor->getRoutes(null), array(
                     'format'           => $input->getOption('format'),
                     'raw_text'         => $input->getOption('raw'),
                     'show_controllers' => $input->getOption('show-controllers'),
